@@ -1,7 +1,5 @@
 <template>
-  
     <button class="btn1" @click="$router.push({path:'/personal'})">Start</button>
- 
     <div id="container">
     <div class="book">
         <div class="first paper">
@@ -69,7 +67,7 @@ body {
 
 
 .btn1 {
-      display: inline-block;
+      display: block;
       position: absolute;
       left: 50%;
       top: 65%;
@@ -78,24 +76,23 @@ body {
       height: 50px;
       bottom: 22.5%;
       /* 文字颜色 */
-      color: #6e7bb6; 
+      color: #9cb1c4; 
       /* 清除背景色 */
       background: transparent; 
-      border: 2px solid #6e7bb6;
       /* 圓角 */
       border-radius: 6px; 
-      border: none;
-      padding: 16px 32px;
-      text-align: center;
-      font-size: 14px;
+      margin:30px;
+      font-weight: bold;
+      font-size: 16px;
       transition-duration: 0.4s;
       cursor: pointer;
       text-transform: uppercase;
-      border: 2px solid #6e7bb6;
+      border: 4px solid #9cb1c4;
 }
+
 /* 懸停 */
 .btn1:hover {
-      background-color: #6e7bb6;
+      background-color: #9cb1c4;
       color: white;
 }
 
@@ -129,7 +126,7 @@ body {
 .book .side {
   width: 3em;
   height: 40em;
-  background: #b36060;
+  background: #245256;
   position: absolute;
   left: -3em;
   top: 0;
@@ -187,7 +184,7 @@ body {
   transform: translateZ(0px);
 }
 .book .first .page {
-  background: #ef9a9a;
+  background: #397f86;
 }
 .book .first .page.front:after {
   position: absolute;
