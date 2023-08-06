@@ -24,11 +24,28 @@
   </div>
 
   <article class="larg">
-    <div>
-      <h3>Add + <span class="entypo-down-open" ></span></h3>
-    </div>
-    <div>
-      <h3>Project 1 <span class="entypo-down-open"></span></h3>
+    <div class="dropdown">
+      <h3>Add + </h3>
+      <div class="dropdown-content">
+        <input type="date" v-model="nowDay" min="2023-01-01"/>
+        <select v-model="MealCat" class="filter-box">
+          <option value="早餐">早餐</option>
+          <option value="中餐">中餐</option>
+          <option value="晚餐">晚餐</option>
+          <option value="點心">點心</option>
+          <option value="宵夜">宵夜</option>
+        </select>
+        <input list="foodsdata" v-model="Food" class="filter-box" placeholder="食物名稱">
+        <datalist id="foodsdata" >
+          <option v-for="(item) in fooddata.newsdata" :key="item" :value="item.foodName"></option>
+        </datalist>
+        <input type="number" step="0.1" min=1 v-model="Foodweight" class="filter-box">(g)
+        <button class="btn1" v-on:click="addNewDiary">+</button>
+
+  
+      </div>
+      
+
     </div>
 
   </article>
@@ -38,8 +55,83 @@
 
 
 <script>
+    import axios from 'axios';
+    import{reactive} from 'vue';
+    const url = '/foodDB/foodList';
     export default {
-        name: 'PersonalPage'
+        name: 'PersonalPage',
+        setup(){
+          //取得今天日期
+          var nowDay=""
+          var date=new Date();
+          var seperator="-";
+          var year=date.getFullYear();
+          var month=date.getMonth()+1;
+          var strDate=date.getDate();
+
+          if(month>=1&&month<=9){
+            month="0"+month;
+          }
+          if(strDate>=0&&strDate<=9){
+            strDate="0"+strDate;
+          }
+          var daystring=year+seperator+month+seperator+strDate;
+          nowDay=daystring
+          
+          //從資料庫取得食物清單
+          const fooddata = reactive({
+                    newsdata:'',
+          })
+
+          axios.get(url).then((res)=>{
+              fooddata.newsdata=res.data
+              console.log(res.data)
+          })
+
+          return {fooddata,nowDay}
+        },
+        data(){
+          return{
+            Food:'',
+            Foodweight:'0',
+            MealCat:''
+          }
+        },
+        methods:{
+          checkFoodExist(fdname){
+            var foodFindID=-1
+            
+            for(var i=0;i<this.fooddata.newsdata.length;i++)
+            {
+              if(fdname==this.fooddata.newsdata[i].foodName)
+              {
+                foodFindID=this.fooddata.newsdata[i].foodID
+              }
+            }
+            return foodFindID
+
+          },
+          addNewDiary(){
+            if(this.MealCat!=''&& this.checkFoodExist(this.Food)!=-1 && this.Foodweight!='')
+            {
+              console.log("資料確認")
+              // axios.get(url).then((res)=>{
+
+              // })
+            }
+
+            
+          }
+
+
+          
+        }
+
+        
+
+
+
+
     }
     
 </script>
@@ -55,6 +147,68 @@
   src: url('https://weloveiconfonts.com/api/fonts/entypo/entypo.eot');
   src: url('https://weloveiconfonts.com/api/fonts/entypo/entypo.eot?#iefix') format('eot'), url('https://weloveiconfonts.com/api/fonts/entypo/entypo.woff') format('woff'), url('https://weloveiconfonts.com/api/fonts/entypo/entypo.ttf') format('truetype'), url('https://weloveiconfonts.com/api/fonts/entypo/entypo.svg#entypo') format('svg');
 }
+
+.btn1 {
+
+      /* 文字颜色 */
+      color: #9cb1c4; 
+      /* 清除背景色 */
+      background: transparent; 
+      /* 圓角 */
+      border-radius: 6px; 
+      margin:30px;
+      font-weight: bold;
+      font-size: 16px;
+      transition-duration: 0.4s;
+      cursor: pointer;
+      border: 4px solid #9cb1c4;
+}
+
+/* 懸停 */
+.btn1:hover {
+      background-color: #9cb1c4;
+      color: white;
+}
+.dropdown {
+  display: inline-block;
+  width:800px;
+}
+
+.dropdown-content {
+  display: none;
+}
+
+.dropdown:hover .dropdown-content{
+  display: block;
+}
+.filter-box {
+        width: 100px;
+        height: 34px;
+        background-color: #ffffff;
+        border: solid 1px #dcdcdc;
+        font-family: Roboto;
+        font-size: 16px;
+        font-weight: bold;
+        font-style: normal;
+        font-stretch: normal;
+        letter-spacing: normal;
+        text-align: center;
+        color: #3d3d3d;
+        border-color: #dcdcdc;
+        -webkit-appearance: none;
+}
+    
+select {
+    background-image: url(../assets/backdropdown.png);
+    background-position: 80px 9px;
+    font-family: Roboto;
+    font-weight: bold;
+    font-size: 16px;
+    color: #3d3d3d;
+    background-repeat: no-repeat;
+}
+
+
 .entypo-note:before {
   content: "\266a";
 }
