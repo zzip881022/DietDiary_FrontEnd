@@ -58,6 +58,7 @@
     import axios from 'axios';
     import{reactive} from 'vue';
     const url = '/foodDB/foodList';
+    const urlToAddDiary = '/fooddiary/addNewDiary';
     export default {
         name: 'PersonalPage',
         setup(){
@@ -115,11 +116,13 @@
             if(this.MealCat!=''&& this.checkFoodExist(this.Food)!=-1 && this.Foodweight!='')
             {
               console.log("資料確認")
-              // axios.get(url).then((res)=>{
-
-              // })
+              axios.post(urlToAddDiary,{
+                  diaryDate:this.nowDay,
+                  mealCategory:this.MealCat,
+                  foodID:this.checkFoodExist(this.Food),
+                  weight:this.Foodweight
+              }).then( (response) => console.log(response))
             }
-
             
           }
 
