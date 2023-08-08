@@ -120,9 +120,8 @@
                   })
                 }
                 else{
-                    console.log(url+'/'+arr.indexOf(newCat))
                     axios.get(url+'/'+arr.indexOf(newCat)).then((res)=>{
-                    console.log(res.data)
+                    // console.log(res.data)
                     this.fooddata.newsdata=res.data
                   })
                 }
@@ -1216,7 +1215,7 @@
       margin: 0;
       font-size: 20px;
       letter-spacing: 2px;
-      background-color: #34363A;
+      background-color: transparent;
       border-bottom: 1px solid rgba(101, 116, 134, 0.57);
     }
     h2 {
@@ -1234,18 +1233,7 @@
       -webkit-flex: 1;
       -ms-flex: 1;
     }
-    h2:before {
-      content: '';
-      width: 36px;
-      height: 36px;
-      position: absolute;
-      left: -19px;
-      top: 12px;
-      background-color: #34363A;
-      -webkit-transform: rotate(45deg);
-      -moz-transform: rotate(45deg);
-      transform: rotate(45deg);
-    }
+
     h3 {
       font-size: 17px;
       margin: 0;

@@ -24,10 +24,13 @@
   </div>
 
   <article class="larg">
+    <div class="datetitle">
+      <input type="date" v-model="diarydate" min="2023-01-01" class="diarydate"/>
+    </div>
     <div class="dropdown">
       <h3>Add + </h3>
       <div class="dropdown-content">
-        <input type="date" v-model="nowDay" min="2023-01-01"/>
+        <input type="date" v-model="diarydate" min="2023-01-01"/>
         <select v-model="MealCat" class="filter-box">
           <option value="早餐">早餐</option>
           <option value="中餐">中餐</option>
@@ -41,14 +44,10 @@
         </datalist>
         <input type="number" step="0.1" min=1 v-model="Foodweight" class="filter-box">(g)
         <button class="btn1" v-on:click="addNewDiary">+</button>
-
-  
       </div>
-      
-
     </div>
-
   </article>
+
 </main>
 </body>
 </template>
@@ -59,6 +58,7 @@
     import{reactive} from 'vue';
     const url = '/foodDB/foodList';
     const urlToAddDiary = '/fooddiary/addNewDiary';
+    const urlToGetDiary = '/fooddiary/getDiaryByDateAndCat';
     export default {
         name: 'PersonalPage',
         setup(){
@@ -88,6 +88,16 @@
               fooddata.newsdata=res.data
               console.log(res.data)
           })
+          
+          let catlist=['早餐','中餐','點心','晚餐','宵夜']
+          catlist.forEach(cat=>{
+            axios.get(urlToGetDiary,{
+              params:{
+                date:nowDay,
+                cat:cat
+              }
+            }).then( (response) => console.log(response))
+          })
 
           return {fooddata,nowDay}
         },
@@ -95,15 +105,31 @@
           return{
             Food:'',
             Foodweight:'0',
-            MealCat:''
+            MealCat:'',
+            diarydate:this.nowDay
+          }
+        },
+        watch:{
+            diarydate(newday,oldday){
+              if(newday!=oldday){
+                let catlist=['早餐','中餐','點心','晚餐','宵夜']
+                catlist.forEach(cat=>{
+                axios.get(urlToGetDiary,{
+                  params:{
+                    date:newday,
+                    cat:cat
+                  }
+                }).then( (response) => console.log(response))
+              })
+   
+            }
           }
         },
         methods:{
           checkFoodExist(fdname){
             var foodFindID=-1
             
-            for(var i=0;i<this.fooddata.newsdata.length;i++)
-            {
+            for(var i=0;i<this.fooddata.newsdata.length;i++){
               if(fdname==this.fooddata.newsdata[i].foodName)
               {
                 foodFindID=this.fooddata.newsdata[i].foodID
@@ -117,22 +143,23 @@
             {
               console.log("資料確認")
               axios.post(urlToAddDiary,{
-                  diaryDate:this.nowDay,
+                  diaryDate:this.diarydate,
                   mealCategory:this.MealCat,
                   foodID:this.checkFoodExist(this.Food),
                   weight:this.Foodweight
               }).then( (response) => console.log(response))
             }
-            
+          },
+          getDiary(date,cat){
+            axios.get(urlToGetDiary,{
+              params:{
+                date:date,
+                cat:cat
+              }
+            }).then( (response) => console.log(response))
           }
-
-
           
         }
-
-        
-
-
 
 
     }
@@ -151,6 +178,14 @@
   src: url('https://weloveiconfonts.com/api/fonts/entypo/entypo.eot?#iefix') format('eot'), url('https://weloveiconfonts.com/api/fonts/entypo/entypo.woff') format('woff'), url('https://weloveiconfonts.com/api/fonts/entypo/entypo.ttf') format('truetype'), url('https://weloveiconfonts.com/api/fonts/entypo/entypo.svg#entypo') format('svg');
 }
 
+.datetitle{
+  width:800px;
+}
+
+input{
+  width: 100px;
+  height: 40px;
+}
 .btn1 {
 
       /* 文字颜色 */
@@ -186,7 +221,7 @@
 }
 .filter-box {
         width: 100px;
-        height: 34px;
+        height: 40px;
         background-color: #ffffff;
         border: solid 1px #dcdcdc;
         font-family: Roboto;
@@ -1110,7 +1145,7 @@ h1 {
   margin: 0;
   font-size: 20px;
   letter-spacing: 2px;
-  background-color: #34363A;
+  background-color: transparent;
   border-bottom: 1px solid rgba(101, 116, 134, 0.57);
 }
 h2 {
@@ -1127,18 +1162,6 @@ h2 {
   flex: 1;
   -webkit-flex: 1;
   -ms-flex: 1;
-}
-h2:before {
-  content: '';
-  width: 36px;
-  height: 36px;
-  position: absolute;
-  left: -19px;
-  top: 12px;
-  background-color: #34363A;
-  -webkit-transform: rotate(45deg);
-  -moz-transform: rotate(45deg);
-  transform: rotate(45deg);
 }
 h3 {
   font-size: 17px;
